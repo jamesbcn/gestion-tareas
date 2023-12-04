@@ -1,0 +1,8 @@
+<div *ngFor="let task of tasks$ | async">
+    <h3>{{ task.title }}</h3>
+    <p>{{ task.description }}</p>
+    <div *ngFor="let tag of task.tags">
+      <span>{{ tag }}</span>
+    </div>
+    <hr />
+  </div>
