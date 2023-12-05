@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class DeepCopyService {
 
-  deepCopy = (obj: any) => {
+  deepCopy(obj: any): any {
     if (obj === null || typeof obj !== 'object') {
       return obj;
     }

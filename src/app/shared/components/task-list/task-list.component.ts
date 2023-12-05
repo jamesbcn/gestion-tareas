@@ -5,6 +5,7 @@ import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Observable } from 'rxjs';
 import { TaskService } from '../../services/task.service';
 import { TaskModifyComponent } from '../task-modify/task-modify.component';
+import { DeepCopyService } from '../../services/deep-copy.service';
 
 import { MatDialog } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -24,7 +25,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   private taskModifiedSubscription: Subscription = new Subscription();;
 
-  constructor(private taskService: TaskService, private dialog: MatDialog) {}
+  constructor(private taskService: TaskService, private dialog: MatDialog, private copyService: DeepCopyService) {}
 
   ngOnInit(): void {
     
@@ -52,13 +53,12 @@ export class TaskListComponent implements OnInit, OnDestroy {
   openTaskModal(task: Task, enterAnimationDuration: string, exitAnimationDuration: string): void {
 
     // Crear una copia de la tarea para tener adento del modal.
-    const taskCopy = { ...task };
-    const tagsCopy = [...taskCopy.tags];
+    const taskCopy = this.copyService.deepCopy(task);
 
     const dialogRef = this.dialog.open(TaskModifyComponent, {
       height: '400px',
       width: '600px',
-      data: { ...taskCopy, tagsCopy }, // Pasar una copia de la tarea para evitar actualizando los datos sin querer.
+      data: {...taskCopy}, // Pasar una copia de la tarea para evitar actualizando los datos sin querer.
       enterAnimationDuration,
       exitAnimationDuration,
     });

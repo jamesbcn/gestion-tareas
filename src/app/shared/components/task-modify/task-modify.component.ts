@@ -29,8 +29,11 @@ export class TaskModifyComponent {
 
     this.modifyForm = this.fb.group({
       title: new FormControl(task.title),
-      description: new FormControl(task.description)
+      description: new FormControl(task.description),
+      tags: new FormControl(task.tags)
     });
+
+    console.log(this.modifyForm )
 
 
     this.modifyForm.valueChanges.subscribe(({ title, description, tags }) => {
@@ -41,21 +44,33 @@ export class TaskModifyComponent {
 
       this.task = { ...this.task, title, description, tags };
 
-      /* El objeto { title, description } se desestructura del objeto de valor emitido por el observable valueChanges. 
+      /* El objeto { title, description, tags } se desestructura del objeto de valor emitido por el observable valueChanges. 
         Luego, utilizando el operador de propagación (...) se copian las propiedades existentes de this.task en un nuevo objeto, 
         y las propiedades de título y descripción se actualizan con los nuevos valores. 
       */
 
     });
 
+    this.modifyForm.controls['tags'].statusChanges.subscribe((value: any)=>{
+
+      console.log("status change!", value)
+     })
+
+     this.modifyForm.controls['tags'].valueChanges.subscribe((value: any)=>{
+
+      console.log("value change!", value)
+     })
+
    }
 
+   
+
    saveChanges() {
-    if (this.modified) {
+    if (true) {
       this.taskService.modifyTask(this.task.id, this.task).subscribe(
         {
           next: (modifiedTask) => {
-                console.log('Task modified successfully:', modifiedTask);
+                console.log('Tarea se ha modificado con éxito:', modifiedTask);
                 
                 this.taskService.emitTaskModified(modifiedTask);
 
@@ -64,13 +79,13 @@ export class TaskModifyComponent {
 
           },
           error: (error) => {
-                console.error('Error modifying task:', error);
+                console.error('Error modificando la tarea:', error);
                 // Handle error cases
           }
         }
       );
     } else {
-      console.log('No changes to save.');
+      console.log('Ningún cambio para guardar.');
     }
 
   }

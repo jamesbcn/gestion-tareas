@@ -27,6 +27,7 @@ export class TaskService {
 
   modifyTask(id: number, task: Task): Observable<Task> {
     const url = `${this.baseUrl}/tasks/${id}`;
+
     return this.http.put<Task>(url, task);
   }
 

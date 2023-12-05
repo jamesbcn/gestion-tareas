@@ -25,11 +25,15 @@ export class TaskTagsComponent {
 
   announcer = inject(LiveAnnouncer);
 
+  tagAlreadyExists(tagName: string): boolean {
+    return this.tags.some(tag => tag.name === tagName);
+  }
+
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
 
     // Añadir la etiqueta
-    if (value) {
+    if (value && !this.tagAlreadyExists(value)) {
       this.tags.push({name: value});
     }
 
