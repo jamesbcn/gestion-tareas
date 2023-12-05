@@ -1,3 +1,10 @@
+<div>
+  <label for="tagFilter">Filter by Tags:</label>
+  <select id="tagFilter" [(ngModel)]="selectedTags" (change)="filterTasksByTags(selectedTags)" multiple>
+    <option *ngFor="let tag of tags" [value]="tag">{{ tag }}</option>
+  </select>
+</div>
+
 <ng-container *ngFor="let task of tasks$ | async">
     <div>
       <h3>{{ task.title }}</h3>
