@@ -19,11 +19,7 @@ export function modifyTask(req: Request, res: Response) {
 
     console.log("new task version", newTask);
 
-    // Retraso de 2 segundos para simular un servidor.
-    setTimeout(() => {
+    res.status(200).json(TASKS[id]);
 
-        res.status(200).json(TASKS[id]);
-
-    }, 2000);
 
 }

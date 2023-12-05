@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { Task } from '../../../models/task.model';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Observable } from 'rxjs';
@@ -16,15 +17,31 @@ import {MatButtonModule} from '@angular/material/button';
   styleUrl: './task-list.component.sass'
 })
 
-export class TaskListComponent implements OnInit {
+export class TaskListComponent implements OnInit, OnDestroy {
   
   tasks$!: Observable<Task[]>;
+
+  private taskModifiedSubscription: Subscription = new Subscription();;
 
   constructor(private taskService: TaskService, private dialog: MatDialog) {}
 
   ngOnInit(): void {
     
     this.tasks$ = this.taskService.getAllTasks();
+
+    this.taskModifiedSubscription = this.taskService.taskModified$().subscribe(
+      (modifiedTask) => {
+        // Handle the task modification event
+        console.log('Task modified event received:', modifiedTask);
+
+        this.tasks$ = this.taskService.getAllTasks();
+      }
+    );
+ 
+  }
+
+  ngOnDestroy() {
+    this.taskModifiedSubscription.unsubscribe();
   }
 
   openTaskModal(task: Task, enterAnimationDuration: string, exitAnimationDuration: string): void {

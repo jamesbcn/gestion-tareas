@@ -52,12 +52,14 @@ export class TaskModifyComponent {
       this.taskService.modifyTask(this.task.id, this.task).subscribe(
         {
           next: (modifiedTask) => {
-          console.log('Task modified successfully:', modifiedTask);
-          // Handle any additional logic after modifying the task
+                console.log('Task modified successfully:', modifiedTask);
+                
+                this.taskService.emitTaskModified(modifiedTask);
+
           },
           error: (error) => {
-            console.error('Error modifying task:', error);
-            // Handle error cases
+                console.error('Error modifying task:', error);
+                // Handle error cases
           }
         }
       );
