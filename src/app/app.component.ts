@@ -14,9 +14,9 @@ import { Observable, of } from 'rxjs';
   template: `
             <mat-toolbar color="primary">
               <span>Gestión de tareas</span>
-
+              <span style="flex: 1 1 auto;"></span>
               <div *ngIf="isAuthenticated$ | async">
-                <button (click)="logout()"><mat-icon>logout</mat-icon> Cerrar</button>
+                <button (click)="logout()"><mat-icon>logout</mat-icon><span style="vertical-align: 40%"> Cerrar</span></button>
               </div>
               
             </mat-toolbar>
