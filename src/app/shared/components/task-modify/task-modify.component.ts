@@ -1,4 +1,5 @@
 import { Component, Inject } from '@angular/core';
+import { TaskService } from '../../services/task.service';
 import {MAT_DIALOG_DATA, 
   MatDialogActions,
   MatDialogClose,
@@ -21,7 +22,7 @@ export class TaskModifyComponent {
   modifyForm: FormGroup;
   modified: Boolean = false;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public task: Task, public fb: FormBuilder) {
+  constructor(private taskService: TaskService, @Inject(MAT_DIALOG_DATA) public task: Task, public fb: FormBuilder) {
 
     this.modifyForm = this.fb.group({
       title: new FormControl(task.title),
@@ -46,10 +47,23 @@ export class TaskModifyComponent {
 
    }
 
-   saveChanges(){
-    console.log(this.modified, this.task);
+   saveChanges() {
+    if (this.modified) {
+      this.taskService.modifyTask(this.task.id, this.task).subscribe(
+        {
+          next: (modifiedTask) => {
+          console.log('Task modified successfully:', modifiedTask);
+          // Handle any additional logic after modifying the task
+          },
+          error: (error) => {
+            console.error('Error modifying task:', error);
+            // Handle error cases
+          }
+        }
+      );
+    } else {
+      console.log('No changes to save.');
+    }
 
-   }
-
-
+  }
 }

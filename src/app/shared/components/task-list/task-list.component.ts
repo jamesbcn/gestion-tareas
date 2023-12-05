@@ -3,7 +3,6 @@ import { Task } from '../../../models/task.model';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Observable } from 'rxjs';
 import { TaskService } from '../../services/task.service';
-import { TaskAddComponent } from '../task-add/task-add.component';
 import { TaskModifyComponent } from '../task-modify/task-modify.component';
 
 import { MatDialog } from '@angular/material/dialog';

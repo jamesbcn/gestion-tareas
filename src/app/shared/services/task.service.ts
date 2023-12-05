@@ -12,12 +12,21 @@ interface TasksPayload {
   providedIn: 'root'
 })
 export class TaskService {
+
+  baseUrl = "http://localhost:9000/api";
+
   constructor(private http: HttpClient) {}
 
   getAllTasks(): Observable<Task[]> {
-    return this.http.get<TasksPayload>('http://localhost:9000/api/tasks')
+    return this.http.get<TasksPayload>(`${this.baseUrl}/tasks`)
             .pipe(
               map(response => response.payload)
             );
   }
+
+  modifyTask(id: number, task: Task): Observable<Task> {
+    const url = `${this.baseUrl}/tasks/${id}`;
+    return this.http.put<Task>(url, task);
+  }
+
 }
