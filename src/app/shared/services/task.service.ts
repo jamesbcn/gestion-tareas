@@ -40,4 +40,8 @@ export class TaskService {
     this.taskModifiedSubject.next(task);
   }
 
+  generateUniqueId(tasks: Task[]): number {
+    const maxId = tasks.reduce((max, task) => (task.id > max ? task.id : max), 0);
+    return maxId + 1;
+  }
 }
