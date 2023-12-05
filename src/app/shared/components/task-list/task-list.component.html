@@ -1,8 +1,14 @@
-<div *ngFor="let task of tasks$ | async">
-    <h3>{{ task.title }}</h3>
+<ng-container *ngFor="let task of tasks$ | async">
+    <div>
+      <h3>{{ task.title }}</h3>
     <p>{{ task.description }}</p>
-    <div *ngFor="let tag of task.tags">
-      <span>{{ tag }}</span>
+    <div class="tags-container">
+      <div *ngFor="let tag of task.tags" class="tag">
+        <span>{{ tag }}</span>
+      </div>
     </div>
-    <hr />
-  </div>
+    <hr/>
+    <button mat-raised-button (click)="openTaskModal(task, '1000ms', '1000ms')">Modificar</button>
+    <hr/>
+    </div>
+</ng-container>
