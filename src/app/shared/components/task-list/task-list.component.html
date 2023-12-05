@@ -1,9 +1,12 @@
-<div>
-  <label for="tagFilter">Filter by Tags:</label>
-  <select id="tagFilter" [(ngModel)]="selectedTags" (change)="filterTasksByTags(selectedTags)" multiple>
-    <option *ngFor="let tag of tags" [value]="tag">{{ tag }}</option>
-  </select>
-</div>
+
+<mat-form-field>
+  <mat-label>Etiquetas</mat-label>
+  <mat-select [formControl]="tagsSelected" multiple>
+    @for (tag of tagsList; track tag) {
+      <mat-option [value]="tag">{{tag}}</mat-option>
+    }
+  </mat-select>
+</mat-form-field>
 
 <ng-container *ngFor="let task of tasks$ | async">
     <div>
