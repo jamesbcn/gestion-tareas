@@ -7,12 +7,13 @@ import { TaskService } from '../../services/task.service';
 import { TaskModifyComponent } from '../task-modify/task-modify.component';
 
 import { MatDialog } from '@angular/material/dialog';
-import {MatButtonModule} from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-task-list',
   standalone: true,
-  imports: [NgFor, AsyncPipe, MatButtonModule],
+  imports: [NgFor, AsyncPipe, MatButtonModule, MatIconModule],
   templateUrl: './task-list.component.html',
   styleUrl: './task-list.component.sass'
 })
