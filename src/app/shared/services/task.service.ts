@@ -20,4 +20,9 @@ export class TaskService {
               map(response => response.payload)
             );
   }
+
+  generateUniqueId(tasks: Task[]): number {
+    const maxId = tasks.reduce((max, task) => (task.id > max ? task.id : max), 0);
+    return maxId + 1;
+  }
 }
