@@ -13,30 +13,30 @@ import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule } from '@angul
 import { TaskTagsComponent } from '../task-tags/task-tags.component';
 
 @Component({
-  selector: 'app-task-modify',
+  selector: 'app-task-save',
   standalone: true,
   imports: [NgFor, NgStyle, ReactiveFormsModule, MatButtonModule, MatDialogActions, MatDialogClose, TaskTagsComponent],
-  templateUrl: './task-modify.component.html',
-  styleUrl: './task-modify.component.sass'
+  templateUrl: './task-save.component.html',
+  styleUrl: './task-save.component.sass'
 })
-export class TaskModifyComponent {
+export class TaskSaveComponent {
 
-  public modifyForm: FormGroup;
+  public saveForm: FormGroup;
   public modified: Boolean = false;
 
   constructor(private taskService: TaskService, @Inject(MAT_DIALOG_DATA) public task: Task, public fb: FormBuilder,
-              private dialogRef: MatDialogRef<TaskModifyComponent>) {
+              private dialogRef: MatDialogRef<TaskSaveComponent>) {
 
-    this.modifyForm = this.fb.group({
+    this.saveForm = this.fb.group({
       title: new FormControl(task.title),
       description: new FormControl(task.description),
       tags: new FormControl(task.tags)
     });
 
-    console.log(this.modifyForm )
+    console.log(this.saveForm )
 
 
-    this.modifyForm.valueChanges.subscribe(({ title, description, tags }) => {
+    this.saveForm.valueChanges.subscribe(({ title, description, tags }) => {
 
       if( !this.modified ) {
         this.modified = true;
@@ -51,12 +51,12 @@ export class TaskModifyComponent {
 
     });
 
-    this.modifyForm.controls['tags'].statusChanges.subscribe((value: any)=>{
+    this.saveForm.controls['tags'].statusChanges.subscribe((value: any)=>{
 
       console.log("status change!", value)
      })
 
-     this.modifyForm.controls['tags'].valueChanges.subscribe((value: any)=>{
+     this.saveForm.controls['tags'].valueChanges.subscribe((value: any)=>{
 
       console.log("value change!", value)
      })
@@ -67,12 +67,12 @@ export class TaskModifyComponent {
 
    saveChanges() {
     if (true) {
-      this.taskService.modifyTask(this.task.id, this.task).subscribe(
+      this.taskService.saveTask(this.task.id, this.task).subscribe(
         {
-          next: (modifiedTask) => {
-                console.log('Tarea se ha modificado con éxito:', modifiedTask);
+          next: (savedTask) => {
+                console.log('Tarea se ha modificado con éxito:', savedTask);
                 
-                this.taskService.emitTaskModified(modifiedTask);
+                this.taskService.emitTaskSaved(savedTask);
 
                 // Close the dialog when changes are saved
                 this.dialogRef.close();

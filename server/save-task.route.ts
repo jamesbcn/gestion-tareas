@@ -3,21 +3,21 @@ import {TASKS} from "./db-data.js";
 import {setTimeout} from 'timers';
 
 
-export function modifyTask(req: Request, res: Response) {
+export function saveTask(req: Request, res: Response) {
 
     const id = req.params["id"],
         changes = req.body;
 
     console.log("Guardando cambios en la tarea...", id, JSON.stringify(changes));
 
-    const newTask = {
+    const saveTask = {
       ...TASKS[id],
       ...changes
     };
 
-    TASKS[id] = newTask;
+    TASKS[id] = saveTask;
 
-    console.log("new task version", newTask);
+    console.log("new task version", saveTask);
 
     res.status(200).json(TASKS[id]);
 

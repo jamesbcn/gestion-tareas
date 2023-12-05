@@ -14,7 +14,7 @@ interface TasksPayload {
 export class TaskService {
 
   private baseUrl = "http://localhost:9000/api";
-  private taskModifiedSubject = new Subject<Task>();
+  private taskSavedSubject = new Subject<Task>();
 
   constructor(private http: HttpClient) {}
 
@@ -25,20 +25,20 @@ export class TaskService {
             );
   }
 
-  modifyTask(id: number, task: Task): Observable<Task> {
+  saveTask(id: number, task: Task): Observable<Task> {
     const url = `${this.baseUrl}/tasks/${id}`;
 
     return this.http.put<Task>(url, task);
   }
 
   // Observable para suscribirse a eventos de modificación de tarea
-  taskModified$(): Observable<Task> {
-    return this.taskModifiedSubject.asObservable();
+  taskSaved$(): Observable<Task> {
+    return this.taskSavedSubject.asObservable();
   }
 
   // Emitir eventos de modificación de tarea
-  emitTaskModified(task: Task) {
-    this.taskModifiedSubject.next(task);
+  emitTaskSaved(task: Task) {
+    this.taskSavedSubject.next(task);
   }
 
   generateUniqueId(tasks: Task[]): number {
