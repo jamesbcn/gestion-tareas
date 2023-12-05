@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, map } from 'rxjs';
 import { Task } from '../../../models/task.model';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Observable } from 'rxjs';
@@ -31,10 +31,14 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
     this.taskModifiedSubscription = this.taskService.taskModified$().subscribe(
       (modifiedTask) => {
-        // Handle the task modification event
+        // Manejar el evento de modificación de la tarea
         console.log('Task modified event received:', modifiedTask);
 
-        this.tasks$ = this.taskService.getAllTasks();
+        // Actualizar la tarea única en el observable tasks$
+        this.tasks$ = this.tasks$.pipe(
+          map(tasks => tasks.map(task => task.id === modifiedTask.id ? modifiedTask : task))
+        );
+
       }
     );
  
