@@ -10,10 +10,12 @@ import { Task } from '../../../models/task.model';
 import { NgFor, NgStyle } from '@angular/common';
 import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms'
 
+import { TaskTagsComponent } from '../task-tags/task-tags.component';
+
 @Component({
   selector: 'app-task-modify',
   standalone: true,
-  imports: [NgFor, NgStyle, ReactiveFormsModule, MatButtonModule, MatDialogActions, MatDialogClose],
+  imports: [NgFor, NgStyle, ReactiveFormsModule, MatButtonModule, MatDialogActions, MatDialogClose, TaskTagsComponent],
   templateUrl: './task-modify.component.html',
   styleUrl: './task-modify.component.sass'
 })
@@ -31,13 +33,13 @@ export class TaskModifyComponent {
     });
 
 
-    this.modifyForm.valueChanges.subscribe(({ title, description }) => {
+    this.modifyForm.valueChanges.subscribe(({ title, description, tags }) => {
 
       if( !this.modified ) {
         this.modified = true;
       }
 
-      this.task = { ...this.task, title, description };
+      this.task = { ...this.task, title, description, tags };
 
       /* El objeto { title, description } se desestructura del objeto de valor emitido por el observable valueChanges. 
         Luego, utilizando el operador de propagación (...) se copian las propiedades existentes de this.task en un nuevo objeto, 

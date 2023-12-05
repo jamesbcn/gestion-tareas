@@ -51,11 +51,14 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   openTaskModal(task: Task, enterAnimationDuration: string, exitAnimationDuration: string): void {
 
-    
+    // Crear una copia de la tarea para tener adento del modal.
+    const taskCopy = { ...task };
+    const tagsCopy = [...taskCopy.tags];
+
     const dialogRef = this.dialog.open(TaskModifyComponent, {
       height: '400px',
       width: '600px',
-      data: task, // Pasar la tarea como datos al modal
+      data: { ...taskCopy, tagsCopy }, // Pasar una copia de la tarea para evitar actualizando los datos sin querer.
       enterAnimationDuration,
       exitAnimationDuration,
     });
