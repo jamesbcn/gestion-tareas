@@ -8,9 +8,11 @@
   <label for="description">Descripción:</label>
   <textarea id="description" rows="5" cols="50" formControlName="description"></textarea>
   <br>
+  <app-task-tags [tags]="task.tags"></app-task-tags>
   <mat-dialog-actions>
     <button mat-raised-button mat-dialog-close>Cancel</button>
-    <button mat-raised-button type="submit" (click)="saveChanges()" [disabled]="!modified">Guardar</button>
+    <!-- <button mat-raised-button type="submit" (click)="saveChanges()" [disabled]="!modified">Guardar</button> -->
+    <button mat-raised-button type="submit" (click)="saveChanges()">Guardar</button>
   </mat-dialog-actions>
 
   

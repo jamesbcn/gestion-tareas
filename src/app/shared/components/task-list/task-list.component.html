@@ -4,7 +4,7 @@
     <p>{{ task.description }}</p>
     <div class="tags-container">
       <div *ngFor="let tag of task.tags" class="tag">
-        <span>{{ tag }}</span>
+        <span>{{ tag.name }}</span>
       </div>
     </div>
     <hr/>

@@ -4,27 +4,27 @@ export const TASKS: any = {
       id: 1,
       title: "Task title 1",
       description: 'Más información',
-      tags: ['Tag1', 'Tag2']
+      tags: [{name: 'Tag1'}, {name: 'Tag2'}]
   
     },
     2: {
         id: 2,
         title: "Task title 2",
         description: 'Más información',
-        tags: ['Tag1', 'Tag2', 'Tag3']
+        tags: [{name: 'Tag1'}, {name: 'Tag2'}, {name: 'Tag3'}]
       },
     3: {
       id: 3,
       title: "Task title 3",
       description: 'Más información',
-      tags: ['Tag1', 'Tag2', 'URGENTE']
+      tags: [{name: 'Tag1'}, {name: 'Tag2'}, {name: 'URGENTE'}]
     },
   
     4: {
       id: 4,
       title: "Task title 4",
       description: 'Más información',
-      tags: ['Tag2']
+      tags: [{name: 'Tag2'}]
     },
   
   };
