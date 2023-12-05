@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { TaskService } from '../../services/task.service';
 import {MAT_DIALOG_DATA, 
-  MatDialogActions,
+  MatDialogActions, MatDialogRef,
   MatDialogClose,
   MatDialogTitle,
   MatDialogContent,} from '@angular/material/dialog';
@@ -19,10 +19,11 @@ import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule } from '@angul
 })
 export class TaskModifyComponent {
 
-  modifyForm: FormGroup;
-  modified: Boolean = false;
+  public modifyForm: FormGroup;
+  public modified: Boolean = false;
 
-  constructor(private taskService: TaskService, @Inject(MAT_DIALOG_DATA) public task: Task, public fb: FormBuilder) {
+  constructor(private taskService: TaskService, @Inject(MAT_DIALOG_DATA) public task: Task, public fb: FormBuilder,
+              private dialogRef: MatDialogRef<TaskModifyComponent>) {
 
     this.modifyForm = this.fb.group({
       title: new FormControl(task.title),
@@ -55,6 +56,9 @@ export class TaskModifyComponent {
                 console.log('Task modified successfully:', modifiedTask);
                 
                 this.taskService.emitTaskModified(modifiedTask);
+
+                // Close the dialog when changes are saved
+                this.dialogRef.close();
 
           },
           error: (error) => {
