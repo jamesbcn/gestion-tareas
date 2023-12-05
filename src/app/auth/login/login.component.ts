@@ -4,12 +4,13 @@ import { Router } from '@angular/router';
 import { Observable, of, take } from 'rxjs';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { MatButtonModule } from '@angular/material/button';
 import {ReactiveFormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [NgIf, AsyncPipe, ReactiveFormsModule],
+  imports: [NgIf, AsyncPipe, ReactiveFormsModule, MatButtonModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.sass'
 })
