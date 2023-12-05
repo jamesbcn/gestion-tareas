@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Task } from '../../../models/task.model';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable } from 'rxjs';
+import { TaskService } from '../../services/task.service';
 
 @Component({
   selector: 'app-task-list',
@@ -12,17 +13,13 @@ import { Observable, BehaviorSubject } from 'rxjs';
 })
 
 export class TaskListComponent implements OnInit {
-  private tasksSubject = new BehaviorSubject<Task[]>([]);
-  tasks$: Observable<Task[]> = this.tasksSubject.asObservable();
+  
+  tasks$!: Observable<Task[]>;
+
+  constructor(private taskService: TaskService) {}
 
   ngOnInit(): void {
-    // Simulating an asynchronous operation to fetch tasks
-    const fetchedTasks: Task[] = [
-      { title: 'Tarea 1', description: 'Descripción 1', tags: ['Tag1', 'Tag2'] },
-      { title: 'Tarea 2', description: 'Descripción 2', tags: ['Tag3', 'Tag4'] },
-    ];
-
-    // Emit the fetched tasks to subscribers
-    this.tasksSubject.next(fetchedTasks);
+    
+    this.tasks$ = this.taskService.getAllTasks();
   }
 }
