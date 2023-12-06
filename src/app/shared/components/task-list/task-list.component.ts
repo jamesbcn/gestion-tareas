@@ -89,10 +89,10 @@ export class TaskListComponent implements OnInit, OnDestroy {
     this.taskSavedSubscription.unsubscribe();
   }
 
-  openTaskModal(task: Task, enterAnimationDuration: string, exitAnimationDuration: string): void {
+  openTaskModal(enterAnimationDuration: string, exitAnimationDuration: string, task?: Task): void {
 
     // Crear una copia de la tarea para tener adento del modal.
-    const taskCopy = this.copyService.deepCopy(task);
+    const taskCopy = task ? this.copyService.deepCopy(task) : {};
 
     const dialogRef = this.dialog.open(TaskSaveComponent, {
       height: '400px',
