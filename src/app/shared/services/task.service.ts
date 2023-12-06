@@ -40,9 +40,4 @@ export class TaskService {
   emitTaskSaved(task: Task) {
     this.taskSavedSubject.next(task);
   }
-
-  generateUniqueId(tasks: Task[]): number {
-    const maxId = tasks.reduce((max, task) => (task.id > max ? task.id : max), 0);
-    return maxId + 1;
-  }
 }

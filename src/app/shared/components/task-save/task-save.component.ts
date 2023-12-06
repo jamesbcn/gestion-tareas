@@ -28,9 +28,9 @@ export class TaskSaveComponent {
               private dialogRef: MatDialogRef<TaskSaveComponent>) {
 
     this.saveForm = this.fb.group({
-      title: new FormControl(task.title),
-      description: new FormControl(task.description),
-      tags: new FormControl(task.tags)
+      title: new FormControl(task.title || ''),
+      description: new FormControl(task.description || ''),
+      tags: new FormControl(task.tags || [])
     });
 
     console.log(this.saveForm )
