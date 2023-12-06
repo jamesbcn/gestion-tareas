@@ -21,53 +21,38 @@ import { TaskTagsComponent } from '../task-tags/task-tags.component';
 })
 export class TaskSaveComponent {
 
+  
+  public loading = false;
+
   public saveForm: FormGroup;
-  public modified: Boolean = false;
 
   constructor(private taskService: TaskService, @Inject(MAT_DIALOG_DATA) public task: Task, public fb: FormBuilder,
               private dialogRef: MatDialogRef<TaskSaveComponent>, private toastr: ToastrService) {
 
     this.saveForm = this.fb.group({
-      title: new FormControl(task.title || ''),
-      description: new FormControl(task.description || ''),
-      tags: new FormControl(task.tags || [])
+      title: new FormControl(task.title),
+      description: new FormControl(task.description),
+      tags: new FormControl(task.tags)
     });
-
-    console.log(this.saveForm )
-
 
     this.saveForm.valueChanges.subscribe(({ title, description, tags }) => {
 
-      if( !this.modified ) {
-        this.modified = true;
-      }
+      console.log("change!!", { title, description, tags })
 
       this.task = { ...this.task, title, description, tags };
 
-      /* El objeto { title, description, tags } se desestructura del objeto de valor emitido por el observable valueChanges. 
-        Luego, utilizando el operador de propagación (...) se copian las propiedades existentes de this.task en un nuevo objeto, 
-        y las propiedades de título y descripción se actualizan con los nuevos valores. 
-      */
-
     });
-
-    // this.saveForm.controls['tags'].statusChanges.subscribe((value: any)=>{
-
-    //   console.log("status change!", value)
-    //  })
-
-    //  this.saveForm.controls['tags'].valueChanges.subscribe((value: any)=>{
-
-    //   console.log("value change!", value)
-    //  })
 
    }
 
    
 
    saveChanges() {
-    if (true) {
-      this.taskService.saveTask(this.task.id, this.task).subscribe(
+
+    console.log()
+    this.loading = true;
+
+    this.taskService.saveTask(this.task.id, this.task).subscribe(
         {
           next: (savedTask) => {
                 const msg = "Tarea se ha guardado con éxito"
@@ -79,17 +64,19 @@ export class TaskSaveComponent {
                 // Close the dialog when changes are saved
                 this.dialogRef.close();
 
+                setTimeout(() => this.loading = false, 2000);
+
           },
           error: (error) => {
                 const msg = 'Error guardando la tarea';
                 console.error(msg, error);
                 this.toastr.error(msg);
+
+                setTimeout(() => this.loading = false, 2000);
           }
         }
       );
-    } else {
-      console.log('Ningún cambio para guardar.');
-    }
+
 
   }
 }
