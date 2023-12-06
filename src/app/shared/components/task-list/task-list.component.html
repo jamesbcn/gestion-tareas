@@ -1,8 +1,59 @@
-<div *ngFor="let task of tasks$ | async">
-    <h3>{{ task.title }}</h3>
-    <p>{{ task.description }}</p>
-    <div *ngFor="let tag of task.tags">
-      <span>{{ tag }}</span>
+<div style="padding: 86.5px 20px 20px 20px; margin: 0px;">
+
+  <ng-container *ngFor="let task of tasks$ | async">
+    <div class="task-container">
+
+      <!-- Task content in the center -->
+      <div>
+        <h1>{{ task.title }}</h1>
+        <p>{{ task.description }}</p>
+        <hr />
+      </div>
+
+      <!-- Tags and Buttons at the bottom -->
+      <div style="display: flex; justify-content: space-between;">
+        <!-- Tags on the left -->
+        <div style="text-align: left;">
+          <div class="tags-container">
+            <div *ngFor="let tag of task.tags">
+              <span class="tags">{{ tag.name }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Buttons on the right -->
+        <div style="text-align: right;">
+          <button mat-button color="primary" (click)="openTaskModal('1000ms', '1000ms', task)">
+            <mat-icon>edit</mat-icon>
+          </button>
+
+          <button mat-button color="warn" (click)="deleteTask(task.id)">
+            <mat-icon>delete_outline</mat-icon>
+          </button>
+        </div>
+      </div>
     </div>
-    <hr />
+  </ng-container>
+
+
+    <!-- FILTRO -->
+    <div class="filter-container">
+      <mat-form-field>
+        <mat-label>Etiquetas</mat-label>
+        <mat-select [formControl]="tagsSelected" multiple>
+          @for (tag of tagsList; track tag) {
+            <mat-option [value]="tag">{{tag}}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+  <!-- BUTÓN -->
+  <div class="button-container">
+    <button mat-fab color="primary" (click)="openTaskModal('1000ms', '1000ms')">
+      <mat-icon>add</mat-icon>
+    </button>
+    
   </div>
+</div>
+
