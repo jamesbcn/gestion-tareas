@@ -53,7 +53,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
     this.tasks$ = this.taskService.getAllTasks().pipe(
       tap(tasks => {
         this.originalTasks = tasks; // Store the original list of tasks
-        const tagsAll = tasks.flatMap(task => task.tags.map(tag => tag.name));
+        const tagsAll = tasks.flatMap(task => task.tags ? task.tags.map(tag => tag.name) : []);
         this.tagsList = [...new Set(tagsAll)];
         this.tagsSelected.updateValueAndValidity();
         this.loading = false;
