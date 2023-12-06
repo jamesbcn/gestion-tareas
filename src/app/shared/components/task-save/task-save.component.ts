@@ -35,22 +35,16 @@ export class TaskSaveComponent {
       tags: new FormControl(task.tags)
     });
 
-    this.saveForm.valueChanges.subscribe(({ title, description, tags }) => {
-
-      console.log("change!!", { title, description, tags })
-
-      this.task = { ...this.task, title, description, tags };
-
-    });
-
    }
 
    
-
    saveChanges() {
 
-    console.log()
-    this.loading = true;
+    // Deestructurar valores de los controles del formulario
+    const { title, description, tags } = this.saveForm.value;
+
+    // Actualizar las propiedades correspondientes de this.task
+    this.task = { ...this.task, title, description, tags };
 
     this.taskService.saveTask(this.task.id, this.task).subscribe(
         {
@@ -61,7 +55,6 @@ export class TaskSaveComponent {
                 
                 this.taskService.emitTaskSaved(savedTask);
 
-                // Close the dialog when changes are saved
                 this.dialogRef.close();
 
                 setTimeout(() => this.loading = false, 2000);
