@@ -3,6 +3,8 @@ import cors from 'cors';
 
 import {getAllTasks} from "./get-tasks.route.js";
 import {saveTask} from './save-task.route.js';
+import {deleteTask} from './delete-task.route.js';
+
 import {loginUser} from './login.route.js';
 
 const app: express.Express = express.default();
@@ -14,6 +16,8 @@ app.use(cors({origin: true}));
 app.route('/api/tasks').get(getAllTasks);
 
 app.route('/api/tasks/:id').put(saveTask);
+
+app.route('/api/tasks/:id').delete(deleteTask);
 
 app.route('/api/login').post(loginUser);
 
