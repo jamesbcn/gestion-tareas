@@ -19,7 +19,11 @@
     </div>
     <hr/>
     <button mat-button color="primary" (click)="openTaskModal('1000ms', '1000ms', task)"><mat-icon>edit</mat-icon></button>
-    <hr/>
+    
     <button mat-button color="primary" (click)="openTaskModal('1000ms', '1000ms')"><mat-icon>plus_one</mat-icon></button>
+    
+    <button mat-button color="warn" (click)="deleteTask(task.id)"><mat-icon>delete_outline</mat-icon></button>
+    <hr/>
+    
     </div>
 </ng-container>

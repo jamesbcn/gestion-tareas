@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription, map, of, tap } from 'rxjs';
 import { Task } from '../../../models/task.model';
 import { AsyncPipe, JsonPipe, NgFor, NgIf } from '@angular/common';
-import { Observable } from 'rxjs';
+import { Observable, switchMap } from 'rxjs';
 import { TaskService } from '../../services/task.service';
 import { TaskSaveComponent } from '../task-save/task-save.component';
 import { DeepCopyService } from '../../services/deep-copy.service';
@@ -24,6 +24,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 
 export class TaskListComponent implements OnInit, OnDestroy {
   
+  originalTasks: Task[] = [];
   tasks$!: Observable<Task[]>;
 
   tagsSelected = new FormControl('');
@@ -35,54 +36,53 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    this.tagsSelected.valueChanges.subscribe(
-      (values:any): void => {
+    this.updateTasks();
 
-        let arr = [...values]
+    this.subscribeTagsSelected();
 
-        this.filterTasksByTags(arr);
-        
-        }
-    );
-    
-    this.tasks$ = this.taskService.getAllTasks().pipe(
-
-      map(tasks => {
-        // Side Effect: crear un listado de todas las etiquetas disponibles
-        const tagsAll = tasks.flatMap(task => task.tags.map(tag => tag.name));
-
-        // Quitar los duplicados
-        this.tagsList = [...new Set(tagsAll)];
-        
-        return tasks;
-      })
-      
-    );
-    
-      
-    
-
-    this.taskSavedSubscription = this.taskService.taskSaved$().subscribe(
-      (savedTask) => {
-        // Manejar el evento de modificación de la tarea
-        console.log('Evento de tarea modificado se ha recibido:', savedTask);
-
-        // Actualizar la tarea única en el observable tasks$
-        this.tasks$ = this.tasks$.pipe(
-          map(tasks => tasks.map(task => task.id === savedTask.id ? savedTask : task))
-        );
-
-      }
-    );
- 
+    this.subscribeTaskSaved();
   }
 
-  filterTasksByTags(tags: string[]): void {
+  updateTasks(){
 
-    // Update the tasks$ observable based on selected tags
     this.tasks$ = this.taskService.getAllTasks().pipe(
-      map(tasks => tasks.filter(task => tags.every(tag => task.tags.some(taskTag => taskTag.name === tag))))
+      tap(tasks => {
+        this.originalTasks = tasks; // Store the original list of tasks
+        const tagsAll = tasks.flatMap(task => task.tags.map(tag => tag.name));
+        this.tagsList = [...new Set(tagsAll)];
+        this.tagsSelected.updateValueAndValidity();
+      })
     );
+
+  }
+
+  subscribeTagsSelected(){
+
+    this.tagsSelected.valueChanges.subscribe(
+      (values: any): void => {
+  
+        let arr = [...values];
+        this.filterTasksByTags(arr);
+      }
+    );
+
+  }
+
+  subscribeTaskSaved(){
+    this.taskSavedSubscription = this.taskService.taskSaved$().subscribe(
+      (savedTask) => {
+        console.log('Evento de tarea modificado se ha recibido:', savedTask);
+
+        this.updateTasks();
+        
+      }
+    );
+  }
+  
+
+  filterTasksByTags(tags: string[]): void {
+    // Filter tasks in-memory based on selected tags
+    this.tasks$ = of(this.originalTasks.filter(task => tags.every((tag: any) => task.tags.some(taskTag => taskTag.name === tag))));
   }
 
   ngOnDestroy() {
@@ -91,7 +91,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   openTaskModal(enterAnimationDuration: string, exitAnimationDuration: string, task?: Task): void {
 
-    // Crear una copia de la tarea para tener adento del modal.
+    // Crear una copia limpia de la tarea para tener adento del modal.
     const taskCopy = task ? this.copyService.deepCopy(task) : {};
 
     const dialogRef = this.dialog.open(TaskSaveComponent, {
@@ -101,6 +101,21 @@ export class TaskListComponent implements OnInit, OnDestroy {
       enterAnimationDuration,
       exitAnimationDuration,
     });
+  }
+
+  deleteTask(id: number): void {
+    this.taskService.deleteTask(id).subscribe(
+      {
+        next: (deletedTask: Task) => {
+        console.log(`Tarea con ID ${deletedTask.id} borrado con éxito.`);
+        this.updateTasks();
+      },
+        error: (error) => {
+          console.error('Error borrando tarea:', error);
+          this.updateTasks();
+        }
+      }
+    );
   }
 
 }
