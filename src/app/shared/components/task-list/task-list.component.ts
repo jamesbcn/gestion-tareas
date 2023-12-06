@@ -25,7 +25,6 @@ import { ToastrService } from 'ngx-toastr';
 
 export class TaskListComponent implements OnInit, OnDestroy {
 
-  loading = false;
   originalTasks: Task[] = [];
   tasks$!: Observable<Task[]>;
 
@@ -48,15 +47,12 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   updateTasks(){
 
-    this.loading = true;
-
     this.tasks$ = this.taskService.getAllTasks().pipe(
       tap(tasks => {
         this.originalTasks = tasks; // Store the original list of tasks
         const tagsAll = tasks.flatMap(task => task.tags ? task.tags.map(tag => tag.name) : []);
         this.tagsList = [...new Set(tagsAll)];
         this.tagsSelected.updateValueAndValidity();
-        this.loading = false;
       })
     );
 
@@ -98,10 +94,10 @@ export class TaskListComponent implements OnInit, OnDestroy {
   openTaskModal(enterAnimationDuration: string, exitAnimationDuration: string, task?: Task): void {
 
     // Crear una copia limpia de la tarea para tener adento del modal.
-    const taskCopy = task ? this.copyService.deepCopy(task) : {};
+    const taskCopy = task ? this.copyService.deepCopy(task) : {title: '', description: '', tags: []};
 
     const dialogRef = this.dialog.open(TaskSaveComponent, {
-      height: '400px',
+      height: '600px',
       width: '600px',
       data: {...taskCopy}, // Pasar una copia de la tarea para evitar actualizando los datos sin querer.
       enterAnimationDuration,
