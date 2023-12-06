@@ -1,7 +1,8 @@
 
 
-<h2 mat-dialog-title>{{ task.title }}</h2>
-<form [formGroup]="saveForm">
+<h1 mat-dialog-title>{{ task.title }}</h1>
+
+<form [formGroup]="saveForm" (submit)="saveChanges()">
   <label for="title">Tarea:</label>
   <input id="title" type="text" formControlName="title" />
 <br><br>
@@ -11,9 +12,6 @@
   <app-task-tags [tags]="task.tags"></app-task-tags>
   <mat-dialog-actions>
     <button mat-raised-button mat-dialog-close>Cancel</button>
-    <!-- <button mat-raised-button type="submit" (click)="saveChanges()" [disabled]="!modified">Guardar</button> -->
-    <button mat-raised-button type="submit" (click)="saveChanges()">Guardar</button>
+    <button mat-raised-button color="primary" type="submit"[disabled]="loading">Guardar</button>
   </mat-dialog-actions>
-
-  
 </form>
