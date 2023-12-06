@@ -9,7 +9,7 @@ import {MatButtonModule} from '@angular/material/button';
 import { Task } from '../../../models/task.model';
 import { NgFor, NgStyle } from '@angular/common';
 import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms'
-
+import { ToastrService } from 'ngx-toastr';
 import { TaskTagsComponent } from '../task-tags/task-tags.component';
 
 @Component({
@@ -25,7 +25,7 @@ export class TaskSaveComponent {
   public modified: Boolean = false;
 
   constructor(private taskService: TaskService, @Inject(MAT_DIALOG_DATA) public task: Task, public fb: FormBuilder,
-              private dialogRef: MatDialogRef<TaskSaveComponent>) {
+              private dialogRef: MatDialogRef<TaskSaveComponent>, private toastr: ToastrService) {
 
     this.saveForm = this.fb.group({
       title: new FormControl(task.title || ''),
@@ -51,15 +51,15 @@ export class TaskSaveComponent {
 
     });
 
-    this.saveForm.controls['tags'].statusChanges.subscribe((value: any)=>{
+    // this.saveForm.controls['tags'].statusChanges.subscribe((value: any)=>{
 
-      console.log("status change!", value)
-     })
+    //   console.log("status change!", value)
+    //  })
 
-     this.saveForm.controls['tags'].valueChanges.subscribe((value: any)=>{
+    //  this.saveForm.controls['tags'].valueChanges.subscribe((value: any)=>{
 
-      console.log("value change!", value)
-     })
+    //   console.log("value change!", value)
+    //  })
 
    }
 
@@ -70,7 +70,9 @@ export class TaskSaveComponent {
       this.taskService.saveTask(this.task.id, this.task).subscribe(
         {
           next: (savedTask) => {
-                console.log('Tarea se ha modificado con éxito:', savedTask);
+                const msg = "Tarea se ha guardado con éxito"
+                console.log(msg, savedTask);
+                this.toastr.success(msg);
                 
                 this.taskService.emitTaskSaved(savedTask);
 
@@ -79,8 +81,9 @@ export class TaskSaveComponent {
 
           },
           error: (error) => {
-                console.error('Error modificando la tarea:', error);
-                // Handle error cases
+                const msg = 'Error guardando la tarea';
+                console.error(msg, error);
+                this.toastr.error(msg);
           }
         }
       );
