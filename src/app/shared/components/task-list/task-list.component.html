@@ -1,8 +1,24 @@
-<div *ngFor="let task of tasks$ | async">
-    <h3>{{ task.title }}</h3>
+
+<mat-form-field>
+  <mat-label>Etiquetas</mat-label>
+  <mat-select [formControl]="tagsSelected" multiple>
+    @for (tag of tagsList; track tag) {
+      <mat-option [value]="tag">{{tag}}</mat-option>
+    }
+  </mat-select>
+</mat-form-field>
+
+<ng-container *ngFor="let task of tasks$ | async">
+    <div>
+      <h3>{{ task.title }}</h3>
     <p>{{ task.description }}</p>
-    <div *ngFor="let tag of task.tags">
-      <span>{{ tag }}</span>
+    <div class="tags-container">
+      <div *ngFor="let tag of task.tags" class="tag">
+        <span>{{ tag.name }}</span>
+      </div>
     </div>
-    <hr />
-  </div>
+    <hr/>
+    <button mat-button color="primary" (click)="openTaskModal(task, '1000ms', '1000ms')"><mat-icon>edit</mat-icon></button>
+    <hr/>
+    </div>
+</ng-container>
