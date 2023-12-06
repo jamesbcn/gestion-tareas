@@ -38,9 +38,9 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
     this.updateTasks();
 
-    this.subscribeTagsSelected()
+    this.subscribeTagsSelected();
 
-    this.subscribeTaskSaved()
+    this.subscribeTaskSaved();
   }
 
   updateTasks(){
@@ -91,7 +91,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   openTaskModal(enterAnimationDuration: string, exitAnimationDuration: string, task?: Task): void {
 
-    // Crear una copia de la tarea para tener adento del modal.
+    // Crear una copia limpia de la tarea para tener adento del modal.
     const taskCopy = task ? this.copyService.deepCopy(task) : {};
 
     const dialogRef = this.dialog.open(TaskSaveComponent, {
@@ -103,8 +103,19 @@ export class TaskListComponent implements OnInit, OnDestroy {
     });
   }
 
-  deleteTask(id: number) {
-    console.log(id)
+  deleteTask(id: number): void {
+    this.taskService.deleteTask(id).subscribe(
+      {
+        next: (deletedTask: Task) => {
+        console.log(`Tarea con ID ${deletedTask.id} borrado con éxito.`);
+        this.updateTasks();
+      },
+        error: (error) => {
+          console.error('Error borrando tarea:', error);
+          this.updateTasks();
+        }
+      }
+    );
   }
 
 }

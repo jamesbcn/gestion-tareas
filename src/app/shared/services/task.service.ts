@@ -31,6 +31,12 @@ export class TaskService {
     return this.http.put<Task>(url, task);
   }
 
+  deleteTask(id: number): Observable<Task> {
+    const url = `${this.baseUrl}/tasks/${id}`;
+
+    return this.http.delete<Task>(url);
+  }
+
   // Observable para suscribirse a eventos de modificación de tarea
   taskSaved$(): Observable<Task> {
     return this.taskSavedSubject.asObservable();
