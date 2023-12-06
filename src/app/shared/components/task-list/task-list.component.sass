@@ -1,4 +1,4 @@
-// task-list.component.sass
+
 
 div
   margin-bottom: 20px
@@ -24,3 +24,31 @@ div
 
 .tag 
   margin-right: 8px
+
+.button-container
+  position: fixed
+  left: 5%
+  bottom: 5%
+  z-index: 1000
+
+.filter-container
+  position: fixed
+  left: 5%
+  top: 9%
+  z-index: 1000
+
+.task-container
+  background-color: white !important
+  margin: 0 auto
+  width: 50%
+  padding: 2px
+  border: 1px solid #ddd
+  border-radius: 5px
+  margin-bottom: 20px
+  display: flex
+  flex-direction: column
+  @media (max-width: 1024px) 
+    width: 70%
+  @media (max-width: 768px) 
+    width: 90%
+  
