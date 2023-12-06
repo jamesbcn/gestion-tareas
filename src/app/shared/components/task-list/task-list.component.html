@@ -18,7 +18,8 @@
       </div>
     </div>
     <hr/>
-    <button mat-button color="primary" (click)="openTaskModal(task, '1000ms', '1000ms')"><mat-icon>edit</mat-icon></button>
+    <button mat-button color="primary" (click)="openTaskModal('1000ms', '1000ms', task)"><mat-icon>edit</mat-icon></button>
     <hr/>
+    <button mat-button color="primary" (click)="openTaskModal('1000ms', '1000ms')"><mat-icon>plus_one</mat-icon></button>
     </div>
 </ng-container>
