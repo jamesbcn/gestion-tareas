@@ -13,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatSelectModule} from '@angular/material/select';
 import {MatFormFieldModule} from '@angular/material/form-field';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-task-list',
@@ -23,7 +24,8 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 })
 
 export class TaskListComponent implements OnInit, OnDestroy {
-  
+
+  loading = false;
   originalTasks: Task[] = [];
   tasks$!: Observable<Task[]>;
 
@@ -32,7 +34,8 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   private taskSavedSubscription: Subscription = new Subscription();
 
-  constructor(private taskService: TaskService, private dialog: MatDialog, private copyService: DeepCopyService) {}
+  constructor(private taskService: TaskService, private dialog: MatDialog, private copyService: DeepCopyService,
+              private toastr: ToastrService) {}
 
   ngOnInit(): void {
 
@@ -45,12 +48,15 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   updateTasks(){
 
+    this.loading = true;
+
     this.tasks$ = this.taskService.getAllTasks().pipe(
       tap(tasks => {
         this.originalTasks = tasks; // Store the original list of tasks
         const tagsAll = tasks.flatMap(task => task.tags.map(tag => tag.name));
         this.tagsList = [...new Set(tagsAll)];
         this.tagsSelected.updateValueAndValidity();
+        this.loading = false;
       })
     );
 
@@ -107,11 +113,15 @@ export class TaskListComponent implements OnInit, OnDestroy {
     this.taskService.deleteTask(id).subscribe(
       {
         next: (deletedTask: Task) => {
-        console.log(`Tarea con ID ${deletedTask.id} borrado con éxito.`);
+        const msg = 'Tarea se ha borrado con éxito.';
+        this.toastr.success(msg);
+        console.log(msg);
         this.updateTasks();
       },
         error: (error) => {
-          console.error('Error borrando tarea:', error);
+          const msg = 'Error borrando tarea';
+          this.toastr.error(msg);
+          console.error(msg, error);
           this.updateTasks();
         }
       }
