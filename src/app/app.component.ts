@@ -13,7 +13,7 @@ import { Observable, of } from 'rxjs';
   standalone: true,
   imports: [CommonModule, RouterOutlet, MatToolbarModule, MatIconModule, MatButtonModule],
   template: `
-            <mat-toolbar color="primary">
+            <mat-toolbar color="primary" style="position: fixed">
               <span>Gestión de tareas</span>
               <span style="flex: 1 1 auto;"></span>
               <div *ngIf="isAuthenticated$ | async">
