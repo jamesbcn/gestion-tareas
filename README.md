@@ -1,27 +1,45 @@
-# GestionTareas
+## Servidores de desarollo
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.0.5.
+Ejecuta `npm run backend` para iniciar el servidor backend con una base de datos simulada.
 
-## Development server
+El servidor estará disponible en `http://localhost:9000/`.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Ejecuta `ng serve` para iniciar el servidor de desarrollo. Accede a `http://localhost:4200/`.
 
-## Code scaffolding
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-## Build
+# Gestión de tareas
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Este [proyecto](https://github.com/jamesbcn/gestion-tareas) fue desarrollado con [Angular CLI](https://github.com/angular/angular-cli) versión **17.0.5** 
+y [Express](https://github.com/expressjs/express) versión **9.6.5**
 
-## Running unit tests
+La aplicación gestiona la adición, modificación, eliminación, listado y filtrado de tareas. Toda la información viene de servicios mockeados. 
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Cuenta con:
 
-## Running end-to-end tests
+- Uso de lazy loading.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+- Uso de RxJS.
 
-## Further help
+- Integración de tags/etiquetas en la tareas.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+- Sistema de autenticación.
+  
+- Estructurado de carpetas.
+  
+- Interfaces para los modelos.
+  
+- Código limpio y reutilizado.
+  
+- Posibilidad de añadir tags a las tareas.
+
+- Posibilidad de filtrar las tareas por tags seleccionadas (todas o alguna).
+
+- Uso de JWT interceptor (token exp: 1hr).
+
+- Uso de Angular Material y SASS.
+  
+- Uso de pipes (async y titlecase).
+
+
+

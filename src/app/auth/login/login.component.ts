@@ -6,6 +6,8 @@ import { AsyncPipe, NgIf } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MatButtonModule } from '@angular/material/button';
 import {ReactiveFormsModule} from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
+import { LoadingService } from '../../shared/services/loading.service';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +21,8 @@ export class LoginComponent {
   loginForm: FormGroup;
   isAuthenticated$: Observable<boolean> = of(false); // Valor inicial de falso.
 
-  constructor(private authService: AuthService, private router: Router, private fb: FormBuilder) {
+  constructor(private authService: AuthService, private router: Router, private fb: FormBuilder, private toastr: ToastrService,
+              private loadingService: LoadingService) {
 
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
@@ -30,6 +33,8 @@ export class LoginComponent {
   }
 
   login(): void {
+
+    this.loadingService.loadingOn();
 
     // Uso de la asignación por desestructuración.
     const { username, password } = this.loginForm.value;
@@ -46,9 +51,17 @@ export class LoginComponent {
               {
                 next: () => {
                   this.router.navigate(['/task-list']);
+                  const msg = "Inicio de sesión exitoso";
+                  this.toastr.success(msg);
+                  
+                  this.loadingService.loadingOff();
                 },
                 error: () => {
-                    alert("Login failed!");
+                  const msg = "Inicio de sesión fallido. Por favor, verifica tus credenciales.";
+                  this.toastr.error(msg);
+
+                  
+                  this.loadingService.loadingOff();
                 }
               }
             );

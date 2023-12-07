@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { TASKS } from "./db-data.js";
+import { TASKS, SERVER_DELAY } from "./db-data.js";
 
 export function deleteTask(req: Request, res: Response) {
 
@@ -15,5 +15,8 @@ export function deleteTask(req: Request, res: Response) {
     
     console.log("Borrando la tarea...", id);
 
-    res.status(200).json(deletedTask);
+    // Retraso para simular un servidor.
+    setTimeout(() => res.status(200).json(deletedTask) ,SERVER_DELAY);
+
+    
 };

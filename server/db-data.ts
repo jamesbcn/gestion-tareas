@@ -1,3 +1,5 @@
+export const SERVER_DELAY: number = 500;
+
 export const TASKS: any = {
   "1": {
     "id": 1,
@@ -50,14 +52,16 @@ export const TASKS: any = {
 };
   
   
-  export const USERS = {
+export const USERS = {
     1: {
       id: 1,
       username: 'test',
       password: 'test'
     }
   
-  };
+};
+
+export const SECRET_KEY = 'testeeSECRETKEY12345';
   
   
   export function authenticate(username: string, password: string) {

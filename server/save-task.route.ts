@@ -1,5 +1,5 @@
 import {Request, Response} from 'express';
-import {TASKS} from "./db-data.js";
+import {TASKS, SERVER_DELAY} from "./db-data.js";
 
 
 export function saveTask(req: Request, res: Response) {
@@ -20,7 +20,9 @@ export function saveTask(req: Request, res: Response) {
 
           console.log("Updated task version", updatedTask);
 
-          res.status(200).json(updatedTask);
+          // Retraso de 1 segundo para simular un servidor.
+          setTimeout(()=> res.status(200).json(updatedTask), SERVER_DELAY);
+          
       } else {
           // Create a new task with a generated ID
           const newId = generateNewId();
@@ -33,7 +35,9 @@ export function saveTask(req: Request, res: Response) {
 
           console.log("New task version", newTask);
 
-          res.status(200).json(newTask);
+          // Retraso para simular un servidor.
+          setTimeout(()=> res.status(200).json(newTask), SERVER_DELAY);
+
       }
   } catch (error) {
       console.error("Error saving task:", error);
