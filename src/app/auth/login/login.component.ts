@@ -6,6 +6,7 @@ import { AsyncPipe, NgIf } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MatButtonModule } from '@angular/material/button';
 import {ReactiveFormsModule} from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,7 @@ export class LoginComponent {
   loginForm: FormGroup;
   isAuthenticated$: Observable<boolean> = of(false); // Valor inicial de falso.
 
-  constructor(private authService: AuthService, private router: Router, private fb: FormBuilder) {
+  constructor(private authService: AuthService, private router: Router, private fb: FormBuilder, private toastr: ToastrService) {
 
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
@@ -46,9 +47,12 @@ export class LoginComponent {
               {
                 next: () => {
                   this.router.navigate(['/task-list']);
+                  const msg = "Inicio de sesión exitoso";
+                  this.toastr.success(msg);
                 },
                 error: () => {
-                    alert("Login failed!");
+                  const msg = "Inicio de sesión fallido. Por favor, verifica tus credenciales.";
+                  this.toastr.error(msg);
                 }
               }
             );
