@@ -5,13 +5,14 @@ import { AuthService } from './auth/auth.service';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
+import { LoadingComponent } from './shared/components/loading/loading.component';
 
 import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, MatToolbarModule, MatIconModule, MatButtonModule],
+  imports: [CommonModule, RouterOutlet, MatToolbarModule, MatIconModule, MatButtonModule, LoadingComponent],
   template: `
             <mat-toolbar color="primary" style="position: fixed">
               <span>Gestión de tareas</span>
@@ -21,6 +22,7 @@ import { Observable, of } from 'rxjs';
               </div>
               
             </mat-toolbar>
+            <app-loading></app-loading>
             <router-outlet></router-outlet>
   `
 })

@@ -1,3 +1,5 @@
+export const SERVER_DELAY: number = 500;
+
 export const TASKS: any = {
   "1": {
     "id": 1,

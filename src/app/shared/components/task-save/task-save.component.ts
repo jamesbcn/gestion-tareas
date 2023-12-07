@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectorRef } from '@angular/core';
 import { TaskService } from '../../services/task.service';
 import {MAT_DIALOG_DATA, 
   MatDialogActions, MatDialogRef,
@@ -7,27 +7,32 @@ import {MAT_DIALOG_DATA,
   MatDialogContent,} from '@angular/material/dialog';
 import {MatButtonModule} from '@angular/material/button';
 import { Task } from '../../../models/task.model';
-import { NgFor, NgStyle } from '@angular/common';
+import { AsyncPipe, NgFor, NgStyle } from '@angular/common';
 import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms'
 import { ToastrService } from 'ngx-toastr';
 import { TaskTagsComponent } from '../task-tags/task-tags.component';
+import { LoadingService } from '../../services/loading.service';
 
 @Component({
   selector: 'app-task-save',
   standalone: true,
-  imports: [NgFor, NgStyle, ReactiveFormsModule, MatButtonModule, MatDialogActions, MatDialogClose, TaskTagsComponent],
+  imports: [NgFor, NgStyle, AsyncPipe, ReactiveFormsModule, MatButtonModule, MatDialogActions, MatDialogClose, TaskTagsComponent],
   templateUrl: './task-save.component.html',
   styleUrl: './task-save.component.sass'
 })
 export class TaskSaveComponent {
 
   
-  public loading = false;
+  saveForm: FormGroup;
+  task: Task;
 
-  public saveForm: FormGroup;
 
-  constructor(private taskService: TaskService, @Inject(MAT_DIALOG_DATA) public task: Task, public fb: FormBuilder,
-              private dialogRef: MatDialogRef<TaskSaveComponent>, private toastr: ToastrService) {
+
+  constructor(private taskService: TaskService, @Inject(MAT_DIALOG_DATA) task: Task, public fb: FormBuilder,
+              private dialogRef: MatDialogRef<TaskSaveComponent>, private toastr: ToastrService,
+              private cdr: ChangeDetectorRef, public loadingService: LoadingService) {
+
+    this.task = task;
 
     this.saveForm = this.fb.group({
       title: new FormControl(task.title),
@@ -40,11 +45,14 @@ export class TaskSaveComponent {
    
    saveChanges() {
 
-    // Deestructurar valores de los controles del formulario
-    const { title, description, tags } = this.saveForm.value;
+    this.loadingService.loadingOn();
+
+    const changes = this.saveForm.value;
 
     // Actualizar las propiedades correspondientes de this.task
-    this.task = { ...this.task, title, description, tags };
+    this.task = { ...this.task, ...changes };
+
+    this.cdr.detach(); // Evitar ver cambios en los valores en la vista durante la animación de cierre del modal 
 
     this.taskService.saveTask(this.task.id, this.task).subscribe(
         {
@@ -52,21 +60,16 @@ export class TaskSaveComponent {
                 const msg = "Tarea se ha guardado con éxito"
                 console.log(msg, savedTask);
                 this.toastr.success(msg);
-                
-                this.taskService.emitTaskSaved(savedTask);
 
-                this.dialogRef.close();
-
-                setTimeout(() => this.loading = false, 2000);
-
+                this.dialogRef.close(savedTask);
           },
           error: (error) => {
                 const msg = 'Error guardando la tarea';
                 console.error(msg, error);
                 this.toastr.error(msg);
 
-                setTimeout(() => this.loading = false, 2000);
-          }
+          },
+          complete: () => this.loadingService.loadingOff()
         }
       );
 
