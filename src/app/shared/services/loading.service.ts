@@ -7,7 +7,7 @@ import {concatMap, finalize, tap} from 'rxjs/operators';
 })
 export class LoadingService {
 
-  private loadingSubject = new BehaviorSubject<boolean>(true);
+  private loadingSubject = new BehaviorSubject<boolean>(false);
 
   loading$: Observable<boolean> = this.loadingSubject.asObservable();
 
