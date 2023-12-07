@@ -80,12 +80,38 @@ export class TaskListComponent implements OnInit, OnDestroy {
       }
     );
   }
+
+  filterTasksByTags(selectedTags: string[]): void {
+    // Paso 1: Obtener las tareas originales
+    const originalTasks = this.originalTasks;
+  
+    // Paso 2: Filtrar tareas según si tienen todas las etiquetas seleccionadas (every)
+    const filteredTasks = originalTasks.filter(task =>
+      // Check if every selected tag is present in the task's tags
+      selectedTags.every(selectedTag =>
+        task.tags.some(taskTag => taskTag.name === selectedTag)
+      )
+    );
+  
+    // // Paso 3: Actualizar el observable tareas$ con las tareas filtradas
+    this.tasks$ = of(filteredTasks);
+  }
   
 
-  filterTasksByTags(tags: string[]): void {
-    // Filter tasks in-memory based on selected tags
-    this.tasks$ = of(this.originalTasks.filter(task => tags.every((tag: any) => task.tags.some(taskTag => taskTag.name === tag))));
+  filterTasksByTagsAny(selectedTags: string[]): void {
+    // Paso 1: Obtener las tareas originales
+    const originalTasks = this.originalTasks;
+  
+    // Paso 2: Filtrar tareas según si tienen al menos una etiqueta seleccionada
+    const filteredTasks = originalTasks.filter(task =>
+      // Verificar si al menos una etiqueta de la tarea tiene un nombre que coincida con alguna etiqueta seleccionada
+      task.tags.some(taskTag => selectedTags.includes(taskTag.name))
+    );
+  
+    // Paso 3: Actualizar el observable tareas$ con las tareas filtradas
+    this.tasks$ = of(filteredTasks);
   }
+  
 
   ngOnDestroy() {
     this.taskSavedSubscription.unsubscribe();
