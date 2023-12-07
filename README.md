@@ -7,6 +7,7 @@ El servidor estará disponible en `http://localhost:9000/`.
 Ejecuta `ng serve` para iniciar el servidor de frontend. Accede a `http://localhost:4200/`.
 
 Usuario: **test**
+
 Contraseña: **test**
 
 
@@ -36,7 +37,7 @@ Cuenta con:
   
 - Posibilidad de añadir tags a las tareas.
 
-- Posibilidad de filtrar las tareas por tags seleccionadas (todas o alguna).
+- Posibilidad de filtrar las tareas por tags seleccionadas (todas o algunas).
 
 - Uso de JWT interceptor (token exp: 1hr).
 
