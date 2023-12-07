@@ -1,0 +1,17 @@
+<div class="login-box">
+  <div *ngIf="!(isAuthenticated$ | async)" class="login-container">
+    <h2>Iniciar Sesión</h2>
+    <form (ngSubmit)="login()" [formGroup]="loginForm">
+      <label>Usuario:</label>
+      <input type="text" formControlName="username">
+
+      <label>Contraseña:</label>
+      <input type="password" formControlName="password">
+
+      <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid">Iniciar</button>
+    </form>
+  </div>
+  <div *ngIf="isAuthenticated$ | async" class="login-container">
+    <p>Ya has iniciado sesión.</p>
+  </div>
+</div>
