@@ -15,6 +15,7 @@ import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatSelectModule} from '@angular/material/select';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { ToastrService } from 'ngx-toastr';
+import { LoadingService } from '../../../services/loading.service';
 
 @Component({
   selector: 'app-task-list',
@@ -38,7 +39,7 @@ export class TaskListComponent implements OnInit {
   filterOptions: string[] = ['Algunas', 'Todas'];
 
   constructor(private taskService: TaskService, private dialog: MatDialog, private copyService: DeepCopyService,
-              private toastr: ToastrService) {}
+              private toastr: ToastrService, private loadingService: LoadingService) {}
 
   ngOnInit(): void {
 
@@ -146,18 +147,26 @@ export class TaskListComponent implements OnInit {
   }
 
   deleteTask(id: number): void {
+    this.loadingService.loadingOn();
+
     this.taskService.deleteTask(id).subscribe(
       {
         next: (deletedTask: Task) => {
         const msg = 'Tarea se ha borrado con éxito.';
         this.toastr.success(msg);
         console.log(msg);
+
+        this.loadingService.loadingOff();
+
         this.reloadTasks();
       },
         error: (error) => {
           const msg = 'Error borrando tarea';
           this.toastr.error(msg);
           console.error(msg, error);
+
+          this.loadingService.loadingOff();
+          
           this.reloadTasks();
         }
       }
