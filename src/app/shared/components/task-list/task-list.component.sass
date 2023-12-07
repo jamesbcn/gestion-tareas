@@ -1,26 +1,50 @@
-// task-list.component.sass
 
-div
-  margin-bottom: 20px
-
-  h3
-    color: #333
-
-  p
-    color: #666
-
-  div
-    span
-      margin-right: 5px
-      background-color: #ccc
-      padding: 3px 5px
-      border-radius: 3px
-      display: inline-block
-
+h1
+  color: #333
+  text-align: center !important
+  text-size: 20px
+  margin-bottom: 35px
+p
+  color: #666
+  margin-bottom: 35px
 
 .tags-container 
   display: flex
 
-
-.tag 
+.tags
+  font-size: 11px
+  background-color: #ccc
+  padding: 3px 5px
+  border-radius: 3px
+  display: inline-block
   margin-right: 8px
+  margin-top: 5px
+
+
+.button-container
+  position: fixed
+  left: 5%
+  bottom: 5%
+  z-index: 1000
+
+.filter-container
+  position: fixed
+  left: 5%
+  top: 9%
+  z-index: 1000
+
+.task-container
+  background-color: white !important
+  margin: 0px auto
+  margin-bottom: 20px
+  width: 50%
+  padding: 20px 20px 8px 20px
+  border: 1px solid #ddd
+  border-radius: 5px
+  display: flex
+  flex-direction: column
+  @media (max-width: 1024px) 
+    width: 70%
+  @media (max-width: 768px) 
+    width: 90%
+  
