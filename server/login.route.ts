@@ -1,5 +1,5 @@
 import {Request, Response} from 'express';
-import {authenticate} from "./db-data.js";
+import {SERVER_DELAY, authenticate} from "./db-data.js";
 
 
 export function loginUser(req: Request, res: Response) {
@@ -12,7 +12,7 @@ export function loginUser(req: Request, res: Response) {
 
   const user = authenticate(username, password);
 
-  // Retraso de 2 segundos para simular un servidor.
+  // Retraso para simular un servidor.
   setTimeout(() => {
 
     if (user) {
@@ -22,6 +22,6 @@ export function loginUser(req: Request, res: Response) {
       res.sendStatus(403);
     }
 
-  },2000);
+  },SERVER_DELAY);
 
 }
