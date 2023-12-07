@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject, map, shareReplay } from 'rxjs';
 import { Task } from '../../models/task.model';
+import  { environment } from '../../../environment/environment';
 
 interface TasksPayload {
   payload: Task[];
@@ -13,7 +14,7 @@ interface TasksPayload {
 })
 export class TaskService {
 
-  private baseUrl = "http://localhost:9000/api";
+  private baseUrl = environment.domain;
 
   constructor(private http: HttpClient) {}
 
