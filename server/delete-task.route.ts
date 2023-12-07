@@ -15,5 +15,8 @@ export function deleteTask(req: Request, res: Response) {
     
     console.log("Borrando la tarea...", id);
 
-    res.status(200).json(deletedTask);
+    // Retraso de 1 segundo para simular un servidor.
+    setTimeout(() => res.status(200).json(deletedTask) ,1000);
+
+    
 };

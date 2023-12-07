@@ -12,11 +12,16 @@ export function loginUser(req: Request, res: Response) {
 
   const user = authenticate(username, password);
 
-  if (user) {
-    res.status(200).json({username: user.username});
-  }
-  else {
-    res.sendStatus(403);
-  }
+  // Retraso de 2 segundos para simular un servidor.
+  setTimeout(() => {
+
+    if (user) {
+      res.status(200).json({username: user.username});
+    }
+    else {
+      res.sendStatus(403);
+    }
+
+  },2000);
 
 }
