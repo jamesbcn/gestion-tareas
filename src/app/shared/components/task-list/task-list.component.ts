@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { pipe, filter, of, tap } from 'rxjs';
+import { pipe, filter, of, tap, finalize } from 'rxjs';
 import { Task } from '../../../models/task.model';
 import { AsyncPipe, JsonPipe, NgFor, NgIf, TitleCasePipe } from '@angular/common';
 import { Observable } from 'rxjs';
@@ -15,7 +15,7 @@ import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatSelectModule} from '@angular/material/select';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { ToastrService } from 'ngx-toastr';
-import { LoadingService } from '../../../services/loading.service';
+import { LoadingService } from '../../services/loading.service';
 
 @Component({
   selector: 'app-task-list',
@@ -59,13 +59,16 @@ export class TaskListComponent implements OnInit {
 
   reloadTasks(){
 
+    this.loadingService.loadingOn();
+    
     this.tasks$ = this.taskService.getAllTasks().pipe(
       tap(tasks => {
         this.originalTasks = tasks; // Store the original list of tasks
         const tagsAll = tasks.flatMap(task => task.tags ? task.tags.map(tag => tag.name) : []);
         this.tagsList = [...new Set(tagsAll)];
         this.tagsSelected.updateValueAndValidity();
-      })
+      }),
+      finalize(() => this.loadingService.loadingOff() )
     );
 
   }

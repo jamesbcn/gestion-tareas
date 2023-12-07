@@ -1,7 +1,7 @@
 import { AsyncPipe, NgIf } from '@angular/common';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { Component } from '@angular/core';
-import { LoadingService } from '../../../services/loading.service';
+import { LoadingService } from '../../services/loading.service';
 
 @Component({
   selector: 'app-loading',
