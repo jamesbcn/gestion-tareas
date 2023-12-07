@@ -1,15 +1,16 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription, map, of, tap } from 'rxjs';
 import { Task } from '../../../models/task.model';
-import { AsyncPipe, JsonPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, JsonPipe, NgFor, NgIf, TitleCasePipe } from '@angular/common';
 import { Observable, switchMap } from 'rxjs';
 import { TaskService } from '../../services/task.service';
 import { TaskSaveComponent } from '../task-save/task-save.component';
 import { DeepCopyService } from '../../services/deep-copy.service';
-
+import { MatRadioChange } from '@angular/material/radio';
 import { MatDialog } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import {MatRadioModule} from '@angular/material/radio';
 import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatSelectModule} from '@angular/material/select';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -18,7 +19,8 @@ import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-task-list',
   standalone: true,
-  imports: [NgFor, AsyncPipe, MatButtonModule, MatIconModule, MatFormFieldModule, MatSelectModule, FormsModule, ReactiveFormsModule, JsonPipe],
+  imports: [NgFor, AsyncPipe, TitleCasePipe, MatButtonModule, MatIconModule, MatFormFieldModule, MatSelectModule, 
+            FormsModule, ReactiveFormsModule, JsonPipe, MatRadioModule],
   templateUrl: './task-list.component.html',
   styleUrl: './task-list.component.sass'
 })
@@ -30,6 +32,9 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   tagsSelected = new FormControl('');
   tagsList: string[] = [];
+
+  filterSelected: string = 'Todas';
+  filterOptions: string[] = ['Algunas', 'Todas'];
 
   private taskSavedSubscription: Subscription = new Subscription();
 
@@ -43,6 +48,14 @@ export class TaskListComponent implements OnInit, OnDestroy {
     this.subscribeTagsSelected();
 
     this.subscribeTaskSaved();
+  }
+
+  radioChange(event: MatRadioChange){
+
+    this.filterSelected = event.value; // Algunas o Todas
+
+    this.tagsSelected.updateValueAndValidity(); // Actualizar validad de tareas
+    
   }
 
   updateTasks(){
@@ -63,8 +76,18 @@ export class TaskListComponent implements OnInit, OnDestroy {
     this.tagsSelected.valueChanges.subscribe(
       (values: any): void => {
   
-        let arr = [...values];
-        this.filterTasksByTags(arr);
+        const arr = [...values];
+        
+        switch(this.filterSelected){
+          case "Todas":
+            this.filterTasksByTagsAll(arr);
+            break;
+          case "Algunas":
+            this.filterTasksByTagsAny(arr);
+            break;
+          default:
+            this.toastr.error("Error en el filtro de etiquetas");
+        }
       }
     );
 
@@ -82,9 +105,37 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
   
 
-  filterTasksByTags(tags: string[]): void {
+  filterTasksByTagsAll(tags: string[]): void {
     // Filter tasks in-memory based on selected tags
-    this.tasks$ = of(this.originalTasks.filter(task => tags.every((tag: any) => task.tags.some(taskTag => taskTag.name === tag))));
+    const originalTasks = this.originalTasks;
+      // Filter tasks based on the condition inside the parentheses
+      this.tasks$ = of(
+        // Use the 'filter' method to iterate through 'originalTasks'
+        originalTasks.filter(task =>
+          // Use 'every' to check if every tag in 'tags' satisfies the condition
+          tags.every((tag: any) =>
+            // Use 'some' to check if at least one taskTag in 'task.tags' satisfies the condition
+            task.tags.some(taskTag => taskTag.name === tag)
+          )
+        )
+      );
+  }
+
+  filterTasksByTagsAny(tags: string[]): void {
+    
+    const originalTasks = this.originalTasks;
+
+    // Filter tasks based on the condition inside the parentheses
+    this.tasks$ = of(
+      // Use the 'filter' method to iterate through 'originalTasks'
+      originalTasks.filter(task =>
+        // Use 'some' to check if at least one tag in 'tags' matches any taskTag in 'task.tags'
+        tags.some((tag: any) =>
+          // Use 'some' to check if at least one taskTag in 'task.tags' satisfies the condition
+          task.tags.some(taskTag => taskTag.name === tag)
+        )
+      )
+    );
   }
 
   ngOnDestroy() {
