@@ -20,7 +20,9 @@ export function saveTask(req: Request, res: Response) {
 
           console.log("Updated task version", updatedTask);
 
-          res.status(200).json(updatedTask);
+          // Retraso de 1 segundo para simular un servidor.
+          setTimeout(()=> res.status(200).json(updatedTask), 1000);
+          
       } else {
           // Create a new task with a generated ID
           const newId = generateNewId();
@@ -33,7 +35,9 @@ export function saveTask(req: Request, res: Response) {
 
           console.log("New task version", newTask);
 
-          res.status(200).json(newTask);
+          // Retraso de 1 segundo para simular un servidor.
+          setTimeout(()=> res.status(200).json(newTask), 1000);
+
       }
   } catch (error) {
       console.error("Error saving task:", error);
