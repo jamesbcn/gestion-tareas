@@ -6,9 +6,8 @@ El servidor estará disponible en `http://localhost:9000/`.
 
 Ejecuta `ng serve` para iniciar el servidor de frontend. Accede a `http://localhost:4200/`.
 
-Usuario: **test**
-
-Contraseña: **test**
+- Usuario: **test**
+- Contraseña: **test**
 
 
 
