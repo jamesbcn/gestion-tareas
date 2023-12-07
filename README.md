@@ -17,9 +17,9 @@ La aplicación gestiona la adición, modificación, eliminación, listado y filt
 
 Cuenta con:
 
-- Módulos lazy loading
+- Uso de lazy loading.
 
-- Uso de RxJS 
+- Uso de RxJS.
 
 - Integración de tags/etiquetas en la tareas.
 
@@ -33,12 +33,13 @@ Cuenta con:
   
 - Posibilidad de añadir tags a las tareas.
 
-- Posibilidad de filtrar las tareas por tags.
+- Posibilidad de filtrar las tareas por tags seleccionadas (todas o alguna).
+
+- Uso de JWT interceptor (token exp: 1hr).
 
 - Uso de Angular Material y SASS.
   
 - Uso de pipes (async y titlecase).
-  
-- Uso de interceptores.
+
 
 

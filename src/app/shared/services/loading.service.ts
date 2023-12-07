@@ -12,13 +12,11 @@ export class LoadingService {
   loading$: Observable<boolean> = this.loadingSubject.asObservable();
 
     loadingOn() {
-      console.log("loading on")
         this.loadingSubject.next(true);
 
     }
 
     loadingOff() {
-      console.log("loading off")
         this.loadingSubject.next(false);
     }
 

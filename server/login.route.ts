@@ -1,27 +1,23 @@
-import {Request, Response} from 'express';
-import {SERVER_DELAY, authenticate} from "./db-data.js";
-
+import { Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
+import { SERVER_DELAY, SECRET_KEY,authenticate } from './db-data.js';
 
 export function loginUser(req: Request, res: Response) {
-
   console.log("User login attempt ...");
 
-  const {username, password} = req.body;
-
-  console.log(req.body)
+  const { username, password } = req.body;
 
   const user = authenticate(username, password);
 
-  // Retraso para simular un servidor.
+  // Delay to simulate server response time
   setTimeout(() => {
-
     if (user) {
-      res.status(200).json({username: user.username});
-    }
-    else {
+      // Generate JWT
+      const token = jwt.sign({ username: user.username, userId: user.id }, SECRET_KEY, { expiresIn: '1h' });
+
+      res.status(200).json({ username: user.username, token });
+    } else {
       res.sendStatus(403);
     }
-
-  },SERVER_DELAY);
-
+  }, SERVER_DELAY);
 }
