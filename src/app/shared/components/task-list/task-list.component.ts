@@ -97,7 +97,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
     const taskCopy = task ? this.copyService.deepCopy(task) : {title: '', description: '', tags: []};
 
     const dialogRef = this.dialog.open(TaskSaveComponent, {
-      height: '600px',
+      height: '530px',
       width: '600px',
       data: {...taskCopy}, // Pasar una copia de la tarea para evitar actualizando los datos sin querer.
       enterAnimationDuration,
