@@ -1,6 +1,7 @@
 
 
-<h1 mat-dialog-title>{{ task.title }}</h1>
+<h1 [hidden]="!task.title" mat-dialog-title>{{ task.title }}</h1>
+<h1 [hidden]="task.title" mat-dialog-title>Tarea nueva</h1>
 
 <form [formGroup]="saveForm" (submit)="saveChanges()">
   <label for="title">Tarea:</label>

@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription, map, of, tap } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { pipe, filter, of, tap } from 'rxjs';
 import { Task } from '../../../models/task.model';
 import { AsyncPipe, JsonPipe, NgFor, NgIf, TitleCasePipe } from '@angular/common';
-import { Observable, switchMap } from 'rxjs';
+import { Observable } from 'rxjs';
 import { TaskService } from '../../services/task.service';
 import { TaskSaveComponent } from '../task-save/task-save.component';
 import { DeepCopyService } from '../../services/deep-copy.service';
@@ -15,6 +15,7 @@ import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatSelectModule} from '@angular/material/select';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { ToastrService } from 'ngx-toastr';
+import { LoadingService } from '../../../services/loading.service';
 
 @Component({
   selector: 'app-task-list',
@@ -25,10 +26,11 @@ import { ToastrService } from 'ngx-toastr';
   styleUrl: './task-list.component.sass'
 })
 
-export class TaskListComponent implements OnInit, OnDestroy {
+export class TaskListComponent implements OnInit {
 
   originalTasks: Task[] = [];
   tasks$!: Observable<Task[]>;
+
 
   tagsSelected = new FormControl('');
   tagsList: string[] = [];
@@ -36,18 +38,15 @@ export class TaskListComponent implements OnInit, OnDestroy {
   filterSelected: string = 'Todas';
   filterOptions: string[] = ['Algunas', 'Todas'];
 
-  private taskSavedSubscription: Subscription = new Subscription();
-
   constructor(private taskService: TaskService, private dialog: MatDialog, private copyService: DeepCopyService,
-              private toastr: ToastrService) {}
+              private toastr: ToastrService, private loadingService: LoadingService) {}
 
   ngOnInit(): void {
 
-    this.updateTasks();
+    this.reloadTasks();
 
     this.subscribeTagsSelected();
 
-    this.subscribeTaskSaved();
   }
 
   radioChange(event: MatRadioChange){
@@ -58,7 +57,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
     
   }
 
-  updateTasks(){
+  reloadTasks(){
 
     this.tasks$ = this.taskService.getAllTasks().pipe(
       tap(tasks => {
@@ -93,18 +92,6 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   }
 
-  subscribeTaskSaved(){
-    this.taskSavedSubscription = this.taskService.taskSaved$().subscribe(
-      (savedTask) => {
-        console.log('Evento de tarea modificado se ha recibido:', savedTask);
-
-        this.updateTasks();
-        
-      }
-    );
-  }
-
-  
   filterTasksByTagsAll(selectedTags: string[]): void {
 
     // Paso 1: Obtener las tareas originales
@@ -137,12 +124,6 @@ export class TaskListComponent implements OnInit, OnDestroy {
     // Paso 3: Actualizar el observable tareas$ con las tareas filtradas
     this.tasks$ = of(filteredTasks);
   }
-  
-
-
-  ngOnDestroy() {
-    this.taskSavedSubscription.unsubscribe();
-  }
 
   openTaskModal(enterAnimationDuration: string, exitAnimationDuration: string, task?: Task): void {
 
@@ -155,23 +136,38 @@ export class TaskListComponent implements OnInit, OnDestroy {
       data: {...taskCopy}, // Pasar una copia de la tarea para evitar actualizando los datos sin querer.
       enterAnimationDuration,
       exitAnimationDuration,
-    });
+    })
+    
+    dialogRef.afterClosed()
+            .pipe(
+                filter(val => !!val), /// solo cuando hemos hecho cambios
+                tap(() => this.reloadTasks() )
+            )
+            .subscribe();
   }
 
   deleteTask(id: number): void {
+    this.loadingService.loadingOn();
+
     this.taskService.deleteTask(id).subscribe(
       {
         next: (deletedTask: Task) => {
         const msg = 'Tarea se ha borrado con éxito.';
         this.toastr.success(msg);
         console.log(msg);
-        this.updateTasks();
+
+        this.loadingService.loadingOff();
+
+        this.reloadTasks();
       },
         error: (error) => {
           const msg = 'Error borrando tarea';
           this.toastr.error(msg);
           console.error(msg, error);
-          this.updateTasks();
+
+          this.loadingService.loadingOff();
+          
+          this.reloadTasks();
         }
       }
     );

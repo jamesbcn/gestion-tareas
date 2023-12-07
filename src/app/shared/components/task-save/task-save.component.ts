@@ -22,12 +22,16 @@ import { TaskTagsComponent } from '../task-tags/task-tags.component';
 export class TaskSaveComponent {
 
   
-  public loading = false;
+  loading = false;
+  saveForm: FormGroup;
+  task: Task;
 
-  public saveForm: FormGroup;
 
-  constructor(private taskService: TaskService, @Inject(MAT_DIALOG_DATA) public task: Task, public fb: FormBuilder,
+
+  constructor(private taskService: TaskService, @Inject(MAT_DIALOG_DATA) task: Task, public fb: FormBuilder,
               private dialogRef: MatDialogRef<TaskSaveComponent>, private toastr: ToastrService) {
+
+    this.task = task;
 
     this.saveForm = this.fb.group({
       title: new FormControl(task.title),
@@ -40,11 +44,10 @@ export class TaskSaveComponent {
    
    saveChanges() {
 
-    // Deestructurar valores de los controles del formulario
-    const { title, description, tags } = this.saveForm.value;
+    const changes = this.saveForm.value;
 
     // Actualizar las propiedades correspondientes de this.task
-    this.task = { ...this.task, title, description, tags };
+    this.task = { ...this.task, ...changes };
 
     this.taskService.saveTask(this.task.id, this.task).subscribe(
         {
@@ -52,10 +55,8 @@ export class TaskSaveComponent {
                 const msg = "Tarea se ha guardado con éxito"
                 console.log(msg, savedTask);
                 this.toastr.success(msg);
-                
-                this.taskService.emitTaskSaved(savedTask);
 
-                this.dialogRef.close();
+                this.dialogRef.close(savedTask);
 
                 setTimeout(() => this.loading = false, 2000);
 
