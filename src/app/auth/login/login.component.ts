@@ -7,7 +7,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MatButtonModule } from '@angular/material/button';
 import {ReactiveFormsModule} from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { LoadingService } from '../../services/loading.service';
+import { LoadingService } from '../../shared/services/loading.service';
 
 @Component({
   selector: 'app-login',
