@@ -1,4 +1,6 @@
-import { Component, Inject, ChangeDetectorRef } from '@angular/core';
+import { Component, Inject, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { TaskService } from '../../services/task.service';
 import {MAT_DIALOG_DATA, 
   MatDialogActions, MatDialogRef,
@@ -20,9 +22,9 @@ import { LoadingService } from '../../services/loading.service';
   templateUrl: './task-save.component.html',
   styleUrl: './task-save.component.sass'
 })
-export class TaskSaveComponent {
+export class TaskSaveComponent implements OnDestroy {
 
-  
+  private destroy$ = new Subject<void>();
   saveForm: FormGroup;
   task: Task;
 
@@ -42,6 +44,12 @@ export class TaskSaveComponent {
 
    }
 
+   ngOnDestroy(): void {
+    // Emit a value to signal the component destruction
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
    
    saveChanges() {
 
@@ -54,24 +62,26 @@ export class TaskSaveComponent {
 
     this.cdr.detach(); // Evitar ver cambios en los valores en la vista durante la animación de cierre del modal 
 
-    this.taskService.saveTask(this.task.id, this.task).subscribe(
-        {
-          next: (savedTask) => {
-                const msg = "Tarea se ha guardado con éxito"
-                console.log(msg, savedTask);
-                this.toastr.success(msg);
+    this.taskService.saveTask(this.task.id, this.task)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(
+          {
+            next: (savedTask) => {
+                  const msg = "Tarea se ha guardado con éxito"
+                  console.log(msg, savedTask);
+                  this.toastr.success(msg);
 
-                this.dialogRef.close(savedTask);
-          },
-          error: (error) => {
-                const msg = 'Error guardando la tarea';
-                console.error(msg, error);
-                this.toastr.error(msg);
+                  this.dialogRef.close(savedTask);
+            },
+            error: (error) => {
+                  const msg = 'Error guardando la tarea';
+                  console.error(msg, error);
+                  this.toastr.error(msg);
 
-          },
-          complete: () => this.loadingService.loadingOff()
-        }
-      );
+            },
+            complete: () => this.loadingService.loadingOff()
+          }
+        );
 
 
   }

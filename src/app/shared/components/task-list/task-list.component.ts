@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { pipe, filter, of, tap, finalize } from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subject, takeUntil, pipe, filter, of, tap, finalize } from 'rxjs';
 import { Task } from '../../../models/task.model';
 import { AsyncPipe, JsonPipe, NgFor, NgIf, TitleCasePipe } from '@angular/common';
 import { Observable } from 'rxjs';
@@ -28,6 +28,8 @@ import { LoadingService } from '../../services/loading.service';
 
 export class TaskListComponent implements OnInit {
 
+  private destroy$ = new Subject<void>();
+
   originalTasks: Task[] = [];
   tasks$!: Observable<Task[]>;
 
@@ -47,6 +49,11 @@ export class TaskListComponent implements OnInit {
 
     this.subscribeTagsSelected();
 
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   radioChange(event: MatRadioChange){
@@ -75,23 +82,27 @@ export class TaskListComponent implements OnInit {
 
   subscribeTagsSelected(){
 
-    this.tagsSelected.valueChanges.subscribe(
-      (values: any): void => {
-  
-        const arr = [...values];
-        
-        switch(this.filterSelected){
-          case "Todas":
-            this.filterTasksByTagsAll(arr);
-            break;
-          case "Algunas":
-            this.filterTasksByTagsAny(arr);
-            break;
-          default:
-            this.toastr.error("Error en el filtro de etiquetas");
+    this.tagsSelected.valueChanges
+      .pipe(
+        takeUntil(this.destroy$)
+      )
+      .subscribe(
+        (values: any): void => {
+    
+          const arr = [...values];
+          
+          switch(this.filterSelected){
+            case "Todas":
+              this.filterTasksByTagsAll(arr);
+              break;
+            case "Algunas":
+              this.filterTasksByTagsAny(arr);
+              break;
+            default:
+              this.toastr.error("Error en el filtro de etiquetas");
+          }
         }
-      }
-    );
+      );
 
   }
 
@@ -144,7 +155,8 @@ export class TaskListComponent implements OnInit {
     dialogRef.afterClosed()
             .pipe(
                 filter(val => !!val), /// solo cuando hemos hecho cambios
-                tap(() => this.reloadTasks() )
+                tap(() => this.reloadTasks() ),
+                takeUntil(this.destroy$)
             )
             .subscribe();
   }
@@ -152,28 +164,32 @@ export class TaskListComponent implements OnInit {
   deleteTask(id: number): void {
     this.loadingService.loadingOn();
 
-    this.taskService.deleteTask(id).subscribe(
-      {
-        next: (deletedTask: Task) => {
-        const msg = 'Tarea se ha borrado con éxito.';
-        this.toastr.success(msg);
-        console.log(msg);
-
-        this.loadingService.loadingOff();
-
-        this.reloadTasks();
-      },
-        error: (error) => {
-          const msg = 'Error borrando tarea';
-          this.toastr.error(msg);
-          console.error(msg, error);
+    this.taskService.deleteTask(id)
+      .pipe(
+        takeUntil(this.destroy$)
+      )
+      .subscribe(
+        {
+          next: (deletedTask: Task) => {
+          const msg = 'Tarea se ha borrado con éxito.';
+          this.toastr.success(msg);
+          console.log(msg);
 
           this.loadingService.loadingOff();
-          
+
           this.reloadTasks();
+        },
+          error: (error) => {
+            const msg = 'Error borrando tarea';
+            this.toastr.error(msg);
+            console.error(msg, error);
+
+            this.loadingService.loadingOff();
+            
+            this.reloadTasks();
+          }
         }
-      }
-    );
+      );
   }
 
 }
