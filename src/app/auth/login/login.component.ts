@@ -39,13 +39,13 @@ export class LoginComponent {
     // Uso de la asignación por desestructuración.
     const { username, password } = this.loginForm.value;
 
-    // Uso de take(1) para desuscribir automáticamente después de recibir el primer valor.
-    this.authService.isAuthenticated$.pipe(take(1))
-    
+    this.authService.isAuthenticated$
+    .pipe(take(1)) // Uso de take(1) para desuscribir automáticamente después de recibir el primer valor.
     .subscribe( (authenticated) => {
         // Next handler (función anónima)
         if (!authenticated) {
           this.authService.login(username, password)
+            .pipe(take(1))
             .subscribe(
               /// Objeto de Observador para mantener las respuestas distintas
               {
@@ -54,15 +54,14 @@ export class LoginComponent {
                   const msg = "Inicio de sesión exitoso";
                   this.toastr.success(msg);
                   
-                  this.loadingService.loadingOff();
                 },
                 error: () => {
                   const msg = "Inicio de sesión fallido. Por favor, verifica tus credenciales.";
                   this.toastr.error(msg);
 
-                  
-                  this.loadingService.loadingOff();
-                }
+                },
+                complete: () => this.loadingService.loadingOff()
+                
               }
             );
           
