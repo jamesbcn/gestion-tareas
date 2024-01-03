@@ -1,6 +1,7 @@
 <div style="padding: 86.5px 20px 20px 20px; margin: 0px;">
 
-  <ng-container *ngFor="let task of tasks$ | async">
+  @for(task of tasks$ | async; track task.title){
+
     <div class="task-container">
 
       <!-- Task content in the center -->
@@ -15,9 +16,11 @@
         <!-- Tags on the left -->
         <div style="text-align: left;">
           <div class="tags-container">
-            <div *ngFor="let tag of task.tags">
+
+            @for(tag of task.tags; track tag.name){
               <span class="tags">{{ tag.name | titlecase}}</span>
-            </div>
+            }
+            
           </div>
         </div>
 
@@ -33,9 +36,8 @@
         </div>
       </div>
     </div>
-  </ng-container>
 
-
+  }
     <!-- FILTRO -->
     <div class="filter-container">
       <div>
@@ -44,13 +46,15 @@
         class="example-radio-group"
         [(ngModel)]="filterSelected">
 
-        <mat-radio-button
-            *ngFor="let filter of filterOptions"
+        @for(filter of filterOptions; track filter){
+          <mat-radio-button
             class="example-radio-button"
             [value]="filter"
             (change)="radioChange($event)">
             {{ filter }}
           </mat-radio-button>
+        }
+        
         </mat-radio-group>
       </div> 
       <div>
