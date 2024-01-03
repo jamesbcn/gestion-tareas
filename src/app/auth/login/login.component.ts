@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
 import { Observable, of, take } from 'rxjs';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MatButtonModule } from '@angular/material/button';
 import {ReactiveFormsModule} from '@angular/forms';
@@ -12,7 +12,7 @@ import { LoadingService } from '../../shared/services/loading.service';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [NgIf, AsyncPipe, ReactiveFormsModule, MatButtonModule],
+  imports: [AsyncPipe, ReactiveFormsModule, MatButtonModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.sass'
 })

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject, takeUntil, pipe, filter, of, tap, finalize } from 'rxjs';
 import { Task } from '../../../models/task.model';
-import { AsyncPipe, JsonPipe, NgFor, NgIf, TitleCasePipe } from '@angular/common';
+import { AsyncPipe, JsonPipe, NgFor, TitleCasePipe } from '@angular/common';
 import { Observable } from 'rxjs';
 import { TaskService } from '../../services/task.service';
 import { TaskSaveComponent } from '../task-save/task-save.component';
@@ -20,7 +20,7 @@ import { LoadingService } from '../../services/loading.service';
 @Component({
   selector: 'app-task-list',
   standalone: true,
-  imports: [NgFor, AsyncPipe, TitleCasePipe, MatButtonModule, MatIconModule, MatFormFieldModule, MatSelectModule, 
+  imports: [AsyncPipe, TitleCasePipe, MatButtonModule, MatIconModule, MatFormFieldModule, MatSelectModule, 
             FormsModule, ReactiveFormsModule, JsonPipe, MatRadioModule],
   templateUrl: './task-list.component.html',
   styleUrl: './task-list.component.sass'

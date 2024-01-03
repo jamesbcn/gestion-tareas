@@ -17,10 +17,9 @@ import { Observable, of } from 'rxjs';
             <mat-toolbar color="primary" style="position: fixed; z-index: 1000">
               <span>Gestión de tareas</span>
               <span style="flex: 1 1 auto;"></span>
-              <div *ngIf="isAuthenticated$ | async">
+              @if( isAuthenticated$ | async ){
                 <button mat-raised-button (click)="logout()"><mat-icon>logout</mat-icon><span style="vertical-align: -10%"> Cerrar</span></button>
-              </div>
-              
+              }
             </mat-toolbar>
             <app-loading></app-loading>
             <router-outlet></router-outlet>
