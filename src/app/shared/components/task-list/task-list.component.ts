@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subject, takeUntil, pipe, filter, of, tap, finalize } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { Subject, take, pipe, filter, of, tap, finalize } from 'rxjs';
 import { Task } from '../../../models/task.model';
 import { AsyncPipe, JsonPipe, NgFor, TitleCasePipe } from '@angular/common';
 import { Observable } from 'rxjs';
@@ -28,8 +28,6 @@ import { LoadingService } from '../../services/loading.service';
 
 export class TaskListComponent implements OnInit {
 
-  private destroy$ = new Subject<void>();
-
   originalTasks: Task[] = [];
   tasks$!: Observable<Task[]>;
 
@@ -49,11 +47,6 @@ export class TaskListComponent implements OnInit {
 
     this.subscribeTagsSelected();
 
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   radioChange(event: MatRadioChange){
@@ -84,7 +77,7 @@ export class TaskListComponent implements OnInit {
 
     this.tagsSelected.valueChanges
       .pipe(
-        takeUntil(this.destroy$)
+        take(1)
       )
       .subscribe(
         (values: any): void => {
@@ -156,7 +149,7 @@ export class TaskListComponent implements OnInit {
             .pipe(
                 filter(val => !!val), /// solo cuando hemos hecho cambios
                 tap(() => this.reloadTasks() ),
-                takeUntil(this.destroy$)
+                take(1)
             )
             .subscribe();
   }
@@ -166,7 +159,7 @@ export class TaskListComponent implements OnInit {
 
     this.taskService.deleteTask(id)
       .pipe(
-        takeUntil(this.destroy$)
+        take(1)
       )
       .subscribe(
         {
