@@ -1,6 +1,5 @@
-import { Component, Inject, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Component, Inject, ChangeDetectorRef } from '@angular/core';
+import { take } from 'rxjs/operators';
 import { TaskService } from '../../services/task.service';
 import {MAT_DIALOG_DATA, 
   MatDialogActions, MatDialogRef,
@@ -9,7 +8,7 @@ import {MAT_DIALOG_DATA,
   MatDialogContent,} from '@angular/material/dialog';
 import {MatButtonModule} from '@angular/material/button';
 import { Task } from '../../../models/task.model';
-import { AsyncPipe, NgFor, NgStyle } from '@angular/common';
+import { AsyncPipe, NgStyle } from '@angular/common';
 import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms'
 import { ToastrService } from 'ngx-toastr';
 import { TaskTagsComponent } from '../task-tags/task-tags.component';
@@ -18,13 +17,12 @@ import { LoadingService } from '../../services/loading.service';
 @Component({
   selector: 'app-task-save',
   standalone: true,
-  imports: [NgFor, NgStyle, AsyncPipe, ReactiveFormsModule, MatButtonModule, MatDialogActions, MatDialogClose, TaskTagsComponent],
+  imports: [NgStyle, AsyncPipe, ReactiveFormsModule, MatButtonModule, MatDialogActions, MatDialogClose, TaskTagsComponent],
   templateUrl: './task-save.component.html',
   styleUrl: './task-save.component.sass'
 })
-export class TaskSaveComponent implements OnDestroy {
+export class TaskSaveComponent {
 
-  private destroy$ = new Subject<void>();
   saveForm: FormGroup;
   task: Task;
 
@@ -44,11 +42,6 @@ export class TaskSaveComponent implements OnDestroy {
 
    }
 
-   ngOnDestroy(): void {
-    // Emit a value to signal the component destruction
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
 
    
    saveChanges() {
@@ -63,7 +56,7 @@ export class TaskSaveComponent implements OnDestroy {
     this.cdr.detach(); // Evitar ver cambios en los valores en la vista durante la animación de cierre del modal 
 
     this.taskService.saveTask(this.task.id, this.task)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(take(1))
       .subscribe(
           {
             next: (savedTask) => {
