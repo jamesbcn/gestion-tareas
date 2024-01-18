@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject, take, takeUntil, pipe, filter, of, tap, finalize } from 'rxjs';
 import { Task } from '../../../models/task.model';
-import { AsyncPipe, JsonPipe, NgFor, TitleCasePipe } from '@angular/common';
+import { AsyncPipe, JsonPipe, TitleCasePipe } from '@angular/common';
 import { Observable } from 'rxjs';
 import { TaskService } from '../../services/task.service';
 import { TaskSaveComponent } from '../task-save/task-save.component';
